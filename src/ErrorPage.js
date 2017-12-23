@@ -2,20 +2,15 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 
 class ErrorPage extends Component {
-  componentDidMount () {
-    ReactDOM.render(
-      <div>
-        <span className='error-text'>No Weather data found for location <b> {this.props.location} </b> </span>
+  render () {
+    return (
+      <p id='error-wrapper'>
+        <span className='error-text'>No Weather data found.</span>
         <span className='error-image' >
           <img id='sad-img' src={'./assets/sad_emoji.png'} alt='' />
         </span>
         <p> Please try again! </p>
-      </div>, document.getElementById('error-wrapper')
-    );
-  }
-  render () {
-    return (
-      <p id='error-wrapper' />
+      </p>
     );
   }
 }
