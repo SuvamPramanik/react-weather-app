@@ -25,41 +25,43 @@ class App extends Component {
   fetchWeatherData = (evt) => {
     evt.preventDefault();
     const location = encodeURIComponent(this.state.location);
-    const apiPrefix = 'http://api.openweathermap.org/data/2.5/forecast?q=';
-    const apiSuffix = '&APPID=' + API_KEY + '&units=metric';
-    const api = apiPrefix + location + apiSuffix;
+    if (location !== '') {
+      const apiPrefix = 'http://api.openweathermap.org/data/2.5/forecast?q=';
+      const apiSuffix = '&APPID=' + API_KEY + '&units=metric';
+      const api = apiPrefix + location + apiSuffix;
 
-    // Used for getting the reference inside other components
-    const self = this;
+      // Used for getting the reference inside other components
+      const self = this;
 
-    xhr({
-      url: api
-    }, function (err, data) {
-      if (data.statusCode === 404) {
+      xhr({
+        url: api
+      }, function (err, data) {
         console.log(data);
-        self.setState({
-          fetchError: true
-        });
-      } else {
-        var body = JSON.parse(data.body);
-        var dates = [];
-        var temps = [];
-        for (var item of body.list) {
-          dates.push(item.dt_txt);
-          temps.push(item.main.temp);
-        }
-        self.setState({
-          fetchError: false,
-          data: body,
-          dates: dates,
-          temps: temps,
-          dataSelected: {
-            data: '',
-            temp: null
+        if (data.statusCode === 404) {
+          self.setState({
+            fetchError: true
+          });
+        } else {
+          var body = JSON.parse(data.body);
+          var dates = [];
+          var temps = [];
+          for (var item of body.list) {
+            dates.push(item.dt_txt);
+            temps.push(item.main.temp);
           }
-        });
-      }
-    });
+          self.setState({
+            fetchError: false,
+            data: body,
+            dates: dates,
+            temps: temps,
+            dataSelected: {
+              data: '',
+              temp: null
+            }
+          });
+        }
+      });
+    }
   }
 
   updateLocation = (evt) => {
@@ -102,7 +104,7 @@ class App extends Component {
           otherwise return null
         */}
         { (this.state.fetchError) ? (
-          <ErrorPage location={this.state.location} />
+          <ErrorPage />
         ) : (this.state.data.list) ? (
           <div className='wrapper'>
             <p className='temp-wrapper'>
