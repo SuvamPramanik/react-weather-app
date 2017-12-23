@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "dotenv": "^4.0.0",
     "eslint-plugin-sort-imports-es6-autofix": "^0.1.1",
     "husky": "^0.14.3",
     "react": "^16.2.0",
