@@ -1,25 +1,17 @@
+import PropTypes from 'prop-types';
 import React, {Component} from 'react';
-import xhr from 'xhr';
 import './App.css';
 import ErrorPage from './ErrorPage.js';
 import Plot from './Plot.js';
+import {changeLocation, fetchData, setSelectedDate, setSelectedTemp} from './action.js';
+import {connect} from 'react-redux';
 
 const API_KEY = '50ebb139a30adf57eb66817bf692b98e';
 
 class App extends Component {
   constructor () {
     super();
-    this.state = {
-      fetchError: false,
-      location: '',
-      data: {},
-      dataes: [],
-      temps: [],
-      dataSelected: {
-        date: '',
-        temp: null
-      }
-    };
+
     this.fetchWeatherData = this.fetchWeatherData.bind(this);
     this.updateLocation = this.updateLocation.bind(this);
     this.onPlotClick = this.onPlotClick.bind(this);
@@ -27,66 +19,31 @@ class App extends Component {
 
   fetchWeatherData (evt) {
     evt.preventDefault();
-    const location = encodeURIComponent(this.state.location);
+    const location = encodeURIComponent(this.props.location);
     if (location !== '') {
       const apiPrefix = 'https://api.openweathermap.org/data/2.5/forecast?q=';
       const apiSuffix = '&APPID=' + API_KEY + '&units=metric';
       const api = apiPrefix + location + apiSuffix;
 
-      // Used for getting the reference inside other components
-      const self = this;
-
-      xhr({
-        url: api
-      }, function (err, data) {
-        if (data.statusCode === 404) {
-          self.setState({
-            fetchError: true
-          });
-        } else {
-          var body = JSON.parse(data.body);
-          var dates = [];
-          var temps = [];
-          for (var item of body.list) {
-            dates.push(item.dt_txt);
-            temps.push(item.main.temp);
-          }
-          self.setState({
-            fetchError: false,
-            data: body,
-            dates: dates,
-            temps: temps,
-            dataSelected: {
-              data: '',
-              temp: null
-            }
-          });
-        }
-      });
+      this.props.dispatch(fetchData(api));
     }
   }
 
   updateLocation (evt) {
-    this.setState({
-      location: evt.target.value
-    });
+    this.props.dispatch(changeLocation(evt.target.value));
   }
 
   onPlotClick (data) {
     if (data.points) {
-      this.setState({
-        dataSelected: {
-          date: data.points[0].x,
-          temp: data.points[0].y
-        }
-      });
+      this.props.dispatch(setSelectedDate(data.points[0].x));
+      this.props.dispatch(setSelectedTemp(data.points[0].y));
     }
   }
 
   render () {
     let currTemp = 'Loading weather data....';
-    if (this.state.data.list) {
-      currTemp = this.state.data.list[0].main.temp;
+    if (this.props.data.list) {
+      currTemp = this.props.data.list[0].main.temp;
     }
     return (
       <div className={'weather-div'}>
@@ -97,7 +54,7 @@ class App extends Component {
               id={'place-input'}
               placeholder={'City, Country'}
               type='text'
-              value={this.state.location}
+              value={this.props.location}
               onChange={this.updateLocation} />
           </label>
         </form>
@@ -105,23 +62,23 @@ class App extends Component {
           Render the current temperature and the forecast if we have data
           otherwise return null
         */}
-        { (this.state.fetchError) ? (
+        { (this.props.fetchError) ? (
           <ErrorPage />
-        ) : (this.state.data.list) ? (
+        ) : (this.props.data.list) ? (
           <div className='wrapper'>
             <p className='temp-wrapper'>
               <span className='temp'>
-                {this.state.dataSelected.temp ? this.state.dataSelected.temp : currTemp}
+                {this.props.tempSelected ? this.props.tempSelected : currTemp}
               </span>
               <span className='temp-symbol'>°C</span>
               <span className='temp-date'>
-                { this.state.dataSelected.temp ? this.state.dataSelected.date : ''}
+                { this.props.tempSelected ? this.props.dateSelected : ''}
               </span>
             </p>
             <h2>Forecast</h2>
             <Plot
-              xData={this.state.dates}
-              yData={this.state.temps}
+              xData={this.props.dates}
+              yData={this.props.temps}
               type='scatter'
               onPlotClick={this.onPlotClick} />
           </div>) : null }
@@ -130,4 +87,19 @@ class App extends Component {
   }
 }
 
-export default App;
+function mapStateToProps (state) {
+  return state;
+}
+
+App.propTypes = {
+  location: PropTypes.string,
+  dispatch: PropTypes.func,
+  data: PropTypes.object,
+  fetchError: PropTypes.bool,
+  tempSelected: PropTypes.number,
+  dateSelected: PropTypes.string,
+  dates: PropTypes.array,
+  temps: PropTypes.array
+};
+
+export default connect(mapStateToProps)(App);
