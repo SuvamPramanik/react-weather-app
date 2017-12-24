@@ -1,9 +1,15 @@
 /* global Plotly */
+import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 
 class Plot extends Component {
 
-  renderPlot = () => {
+  constructor () {
+    super();
+    this.renderPlot = this.renderPlot.bind(this);
+  }
+
+  renderPlot () {
     Plotly.newPlot('plot', [{
       x: this.props.xData,
       y: this.props.yData,
@@ -29,7 +35,6 @@ class Plot extends Component {
     this.renderPlot();
   }
 
-  componentDid
   render () {
     return (
       <div id='plot' />
@@ -37,4 +42,10 @@ class Plot extends Component {
   }
 }
 
+Plot.propTypes = {
+  xData: PropTypes.array,
+  yData: PropTypes.array,
+  type: PropTypes.String,
+  onPlotClick: PropTypes.func
+};
 export default Plot;
