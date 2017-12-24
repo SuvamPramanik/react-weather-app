@@ -26,7 +26,7 @@ class App extends Component {
     evt.preventDefault();
     const location = encodeURIComponent(this.state.location);
     if (location !== '') {
-      const apiPrefix = 'http://api.openweathermap.org/data/2.5/forecast?q=';
+      const apiPrefix = 'https://api.openweathermap.org/data/2.5/forecast?q=';
       const apiSuffix = '&APPID=' + API_KEY + '&units=metric';
       const api = apiPrefix + location + apiSuffix;
 
