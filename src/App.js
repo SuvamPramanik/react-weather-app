@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
-import xhr from 'xhr';
 import './App.css';
 import ErrorPage from './ErrorPage.js';
 import Plot from './Plot.js';
-import {changeLocation, setData, setDates, setErrorStatus, setSelectedDate, setSelectedTemp, setTemps} from './action.js';
+import {changeLocation, fetchData, setSelectedDate, setSelectedTemp} from './action.js';
 import {connect} from 'react-redux';
 
 const API_KEY = '50ebb139a30adf57eb66817bf692b98e';
@@ -26,30 +25,7 @@ class App extends Component {
       const apiSuffix = '&APPID=' + API_KEY + '&units=metric';
       const api = apiPrefix + location + apiSuffix;
 
-      // Used for getting the reference inside other components
-      const self = this;
-
-      xhr({
-        url: api
-      }, function (err, data) {
-        if (data.statusCode === 404) {
-          self.props.dispatch(setErrorStatus(true));
-        } else {
-          var body = JSON.parse(data.body);
-          var dates = [];
-          var temps = [];
-          for (var item of body.list) {
-            dates.push(item.dt_txt);
-            temps.push(item.main.temp);
-          }
-          self.props.dispatch(setErrorStatus(false));
-          self.props.dispatch(setData(body));
-          self.props.dispatch(setDates(dates));
-          self.props.dispatch(setTemps(temps));
-          self.props.dispatch(setSelectedTemp(null));
-          self.props.dispatch(setSelectedDate(''));
-        }
-      });
+      this.props.dispatch(fetchData(api));
     }
   }
 
