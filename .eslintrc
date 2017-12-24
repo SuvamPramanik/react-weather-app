@@ -6,8 +6,18 @@
   "env": {
     "browser": true
   },
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "ecmaFeatures": {
+    "modules": true,
+    "arrowFunctions": true,
+    "classes": true,
+    "jsx": true
+  },
   "plugins": [
     "react",
+    "import",
     "sort-imports-es6-autofix",
     "eslint-plugin-import"
   ],

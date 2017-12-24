@@ -20,9 +20,12 @@ class App extends Component {
         temp: null
       }
     };
+    this.fetchWeatherData = this.fetchWeatherData.bind(this);
+    this.updateLocation = this.updateLocation.bind(this);
+    this.onPlotClick = this.onPlotClick.bind(this);
   }
 
-  fetchWeatherData = (evt) => {
+  fetchWeatherData (evt) {
     evt.preventDefault();
     const location = encodeURIComponent(this.state.location);
     if (location !== '') {
@@ -36,7 +39,6 @@ class App extends Component {
       xhr({
         url: api
       }, function (err, data) {
-        console.log(data);
         if (data.statusCode === 404) {
           self.setState({
             fetchError: true
@@ -64,13 +66,13 @@ class App extends Component {
     }
   }
 
-  updateLocation = (evt) => {
+  updateLocation (evt) {
     this.setState({
       location: evt.target.value
     });
   }
 
-  onPlotClick = (data) => {
+  onPlotClick (data) {
     if (data.points) {
       this.setState({
         dataSelected: {
@@ -127,4 +129,5 @@ class App extends Component {
     );
   }
 }
+
 export default App;
