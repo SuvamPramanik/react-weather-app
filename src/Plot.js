@@ -45,7 +45,7 @@ class Plot extends Component {
 Plot.propTypes = {
   xData: PropTypes.array,
   yData: PropTypes.array,
-  type: PropTypes.String,
+  type: PropTypes.string,
   onPlotClick: PropTypes.func
 };
 export default Plot;
