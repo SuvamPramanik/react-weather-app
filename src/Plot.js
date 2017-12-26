@@ -9,10 +9,14 @@ class Plot extends Component {
     this.renderPlot = this.renderPlot.bind(this);
   }
 
+  shouldComponentUpdate (nextProps) {
+    return !this.props.xData.equals(nextProps.xData) || !this.props.yData.equals(nextProps.yData);
+  }
+
   renderPlot () {
     Plotly.newPlot('plot', [{
-      x: this.props.xData,
-      y: this.props.yData,
+      x: this.props.xData.toJS(),
+      y: this.props.yData.toJS(),
       type: this.props.type
     }], {
       margin: {
