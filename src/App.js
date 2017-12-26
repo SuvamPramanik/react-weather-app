@@ -19,7 +19,7 @@ class App extends Component {
 
   fetchWeatherData (evt) {
     evt.preventDefault();
-    const location = encodeURIComponent(this.props.location);
+    const location = encodeURIComponent(this.props.redux.get('location'));
     if (location !== '') {
       const apiPrefix = 'https://api.openweathermap.org/data/2.5/forecast?q=';
       const apiSuffix = '&APPID=' + API_KEY + '&units=metric';
@@ -42,8 +42,8 @@ class App extends Component {
 
   render () {
     let currTemp = 'Loading weather data....';
-    if (this.props.data.list) {
-      currTemp = this.props.data.list[0].main.temp;
+    if (this.props.redux.getIn(['data', 'list'])) {
+      currTemp = this.props.redux.getIn(['data', 'list', 0, 'main', 'temp']);
     }
     return (
       <div className={'weather-div'}>
@@ -54,7 +54,7 @@ class App extends Component {
               id={'place-input'}
               placeholder={'City, Country'}
               type='text'
-              value={this.props.location}
+              value={this.props.redux.get('location')}
               onChange={this.updateLocation} />
           </label>
         </form>
@@ -62,23 +62,23 @@ class App extends Component {
           Render the current temperature and the forecast if we have data
           otherwise return null
         */}
-        { (this.props.fetchError) ? (
+        { (this.props.redux.get('fetchError')) ? (
           <ErrorPage />
-        ) : (this.props.data.list) ? (
+        ) : (this.props.redux.getIn(['data', 'list'])) ? (
           <div className='wrapper'>
             <p className='temp-wrapper'>
               <span className='temp'>
-                {this.props.tempSelected ? this.props.tempSelected : currTemp}
+                {this.props.redux.get('tempSelected') ? this.props.redux.get('tempSelected') : currTemp}
               </span>
               <span className='temp-symbol'>°C</span>
               <span className='temp-date'>
-                { this.props.tempSelected ? this.props.dateSelected : ''}
+                { this.props.redux.get('tempSelected') ? this.props.redux.get('dateSelected') : ''}
               </span>
             </p>
             <h2>Forecast</h2>
             <Plot
-              xData={this.props.dates}
-              yData={this.props.temps}
+              xData={this.props.redux.get('dates')}
+              yData={this.props.redux.get('temps')}
               type='scatter'
               onPlotClick={this.onPlotClick} />
           </div>) : null }
@@ -88,18 +88,14 @@ class App extends Component {
 }
 
 function mapStateToProps (state) {
-  return state;
+  return {
+    redux: state
+  };
 }
 
 App.propTypes = {
-  location: PropTypes.string,
-  dispatch: PropTypes.func,
-  data: PropTypes.object,
-  fetchError: PropTypes.bool,
-  tempSelected: PropTypes.number,
-  dateSelected: PropTypes.string,
-  dates: PropTypes.array,
-  temps: PropTypes.array
+  redux: PropTypes.object,
+  dispatch: PropTypes.func
 };
 
 export default connect(mapStateToProps)(App);
