@@ -8,7 +8,7 @@ import {connect} from 'react-redux';
 
 const API_KEY = '50ebb139a30adf57eb66817bf692b98e';
 
-class App extends Component {
+export class App extends Component {
   constructor () {
     super();
 
