@@ -8,6 +8,7 @@ export function changeLocation (newLocation) {
 }
 
 export function setSelectedDate (date) {
+  date = date ? date.length === 10 ? date + ' 00H' : date + 'H' : date;
   return ({
     type: 'SET_SELECTED_DATE',
     dateSelected: date

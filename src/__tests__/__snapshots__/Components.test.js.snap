@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Components testing <App /> renders correctly 1`] = `
+<div
+  className="weather-div"
+>
+  <h1>
+    Weather Page
+  </h1>
+  <form
+    onSubmit={[Function]}
+  >
+    <label>
+      I want to know the weather for
+      <input
+        id="place-input"
+        onChange={[Function]}
+        placeholder="City, Country"
+        type="text"
+        value={undefined}
+      />
+    </label>
+  </form>
+</div>
+`;
